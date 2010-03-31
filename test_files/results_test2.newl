@@ -1,0 +1,24 @@
+bbell@bbell-desktop:~/csc251-Compilers$ cat test_files/test2.newl 
+class Factorial {
+   public static void main(String[] a) {
+      System.out.println(new BadClass().ComputeFac(10));
+   }
+}
+
+class Fac {
+      public int ComputeFac(int num) {
+      	     int num_aux;
+	     if ( num < 1)
+      	     	num_aux = 1;
+	     else 
+       	     	num_aux = num * (this.ComputeFac(num - 1));
+	     return num_aux;
+      }
+}bbell@bbell-desktop:~/csc251-Compilers$ !c | ./a.out 
+cat test_files/test2.newl  | ./a.out 
+parseTree: ParseOk (Program (MClass "Factorial" "a" (SPrint (ExpFCall (ExpNewIdent "BadClass") "ComputeFac" (ExpListExp (ExpInt 10))))) (ClassDeclList (ClassDecl "Fac" "void" VEmpty (MethodDeclList (MethodDecl TypeInt "ComputeFac" (FormalList TypeInt "num" FEmpty) (VarDeclList TypeInt "num_aux" VEmpty) (StatementList Empty (SIfElse (ExpComOp (ExpIdent "num") '<' (ExpInt 1)) (SEqual "num_aux" (ExpInt 1)) (SEqual "num_aux" (ExpOp (ExpIdent "num") '*' (ExpExp (ExpFCall ExpThis "ComputeFac" (ExpListExp (ExpOp (ExpIdent "num") '-' (ExpInt 1))))))))) (ExpIdent "num_aux")) MEmpty)) CEmpty))
+classes 
+[("int","int"),("int[]","int[]"),("boolean","boolean"),("Factorial","Factorial"),("Fac","Fac")]
+
+a.out: Error BadClass is not a declared class, context [("this","Factorial")]
+

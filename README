@@ -1,0 +1,5 @@
+The parser directory contains the scanner and parser for NewL. I used Alex as the scanner generator and Happy as the parser generator. Both the scanner and parser are written in Haskell. 
+
+The scanner directory contains a standalone scanner for NewL.
+
+The test_files directory contains test files for the scanner, parser and type checker for NewL.

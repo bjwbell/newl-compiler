@@ -1,0 +1,4 @@
+the first line
+a line with no errors
+a line with :ne error
+a line with tw: err:rs
