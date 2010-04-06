@@ -1,6 +1,12 @@
 default:
 	rm -f newl.hs
-	rm -f Scanner.hs
-	alex Scanner.x
+	rm -f scanner.hs
+	alex scanner.x
 	happy newl.y
-	ghc Scanner.hs newl.hs
+	ghc -o newl scanner.hs newl.hs
+
+clean:
+	rm -f *.hs
+	rm -f *.hi
+	rm -f *.o
+	rm -f newl

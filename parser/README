@@ -1,0 +1,6 @@
+The Alex scanner file is scanner.x and the Happy grammar file is newl.y To compile the program run
+make
+The output is "newl" which is a very basic parser for the NewL language. To test the parser do
+cat test1.newl | ./newl in the directory with newl and test1.newl. It will output the parse tree representation of the test1.newl program.
+
+To remove all compiled files run make clean.

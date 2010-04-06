@@ -7,7 +7,6 @@ import Scanner
 %name newl
 %tokentype { Token }
 %error { parseError }
-%monad { E } { thenE } { returnE }
 %token
   "class"				{ TClass }
   "new"					{ TNew }
@@ -121,6 +120,9 @@ ExpRest :
      "," Exp      { ExpRest $2 }
 
 {
+parseError :: [Token] -> a
+parseError _ = error "Parse error"
+
 
 data Program 
     = Program MainClass ClassDeclList
@@ -219,28 +221,6 @@ data ExpList
 data ExpRest
     = ExpRest Exp
     deriving (Show, Eq)
-
-
-data Symbol 
-    = ClassSymbol 
-      {
-          className       :: String -- class name
-        , publicVariables :: [(String, String)] -- (variable name, variable type name) list of variable
-        , methods         :: [(String, MethodSymbol)] -- (method name, method symbol) list of methods
-      }
-      deriving (Eq)
-
-instance Show Symbol where 
-    show (ClassSymbol cName vars methods) = show cName
-    
-data MethodSymbol = MethodSymbol {
-      returnType :: String
-    , name       :: String
-    , args       :: [String] -- list of argument type names
-    } 
-                    deriving (Show, Eq)
-
-
 
 
 
