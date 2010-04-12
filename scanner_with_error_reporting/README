@@ -1,0 +1,3 @@
+This directory contains Scanner.x which is a scanner for the NewL language. To compile the scanner type "make".
+
+The scanner is processed by Alex and compiled by ghc, the Glasgow Haskell Compiler. 
