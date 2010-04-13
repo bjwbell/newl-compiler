@@ -1,3 +1,11 @@
-This directory contains Scanner.x which is a scanner for the NewL language. To compile the scanner type "make".
+This directory contains the scanner Scanner.x for the NewL language. To compile the scanner type "make". For error reporting the scanner prints a simple 
+message which includes the line and column number of the error.
 
 The scanner is processed by Alex and compiled by ghc, the Glasgow Haskell Compiler. 
+
+To test the scanner run
+cat ../test_files/test1.newl | ./scanner
+
+To test the error reporting run
+cat ../test_files/test.txt | ./scanner
+It should report an error on line 3 and column 13
