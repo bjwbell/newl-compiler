@@ -222,9 +222,26 @@ tokenPosn (TIntLiteral p i) = p
 tokenPosn (TStringLiteral p str) = p
 tokenPosn (TReturn p) = p                    
 
+
+
+getLineNum :: AlexPosn -> Int
+getLineNum (AlexPn offset lineNum colNum) = lineNum 
+
+getColumnNum :: AlexPosn -> Int
+getColumnNum (AlexPn offset lineNum colNum) = colNum
+
+--alexScanTokens :: String -> [token]
+alexScanTokens2 str = go (alexStartPos,'\n',str)
+  where go inp@(pos,_,str) =
+          case alexScan inp 0 of
+                AlexEOF -> []
+                AlexError _ -> error ("lexical error @ line " ++ show (getLineNum(pos)) ++ " and column " ++ show (getColumnNum(pos)))
+                AlexSkip  inp' len     -> go inp'
+                AlexToken inp' len act -> act pos (take len str) : go inp'
+
 main = do
   s <- getContents
-  print (alexScanTokens s)
+  print (alexScanTokens2 s)
 
 
 alex_action_1 =  \p s -> TClass p 
