@@ -121,9 +121,9 @@ ExpRest :
 
 {
 parseError :: [Token] -> a
-parseError tokenList = let pos = tokenPosn(last(tokenList)) 
+parseError tokenList = let pos = tokenPosn(head(tokenList)) 
   in 
-  error ("parse error at " ++ show(getLineNum(pos)) ++ ":" ++ show(getColumnNum(pos)))
+  error ("parse error at line " ++ show(getLineNum(pos)) ++ " and column " ++ show(getColumnNum(pos)))
 
 
 data Program 
