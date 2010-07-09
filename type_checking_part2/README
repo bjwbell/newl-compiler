@@ -1,0 +1,13 @@
+The Alex scanner file is Scanner.x and the Happy grammar file is Newl.y To compile the program run
+make
+The output is "newl" which is a very basic parser for the NewL language. To test the parser do
+cat test1.newl | ./newl in the directory with newl and test1.newl. It will output the parse tree representation of the test1.newl program.
+
+To remove all compiled files run make clean.
+
+To test error reporting run
+1. cat ../test_files/test.txt | ./newl
+It will report "newl: lexical error @ line 3 and column 13"
+2. cat ../test_files/test1.txt | ./newl
+It will report "newl: parse error at 5:1" that is line 5 and column 1. The parse error is due 
+to the main function not having a statement. Please note "1<2;" is an expression not a statement.
