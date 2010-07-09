@@ -29,6 +29,7 @@ import Scanner
   integer_literal			{ TIntLiteral _ $$ }
   string_literal                        { TStringLiteral _ $$ }
   ident		                        { TIdent _ $$ }
+  ident_array                           { TIdentArray _ $$ }
   "{"	 	 	   		{ TLeftBrace _ }
   "}"					{ TRightBrace _ }
   ","					{ TComma _ }
@@ -48,7 +49,7 @@ import Scanner
 Program : 
         MainClass ClassDeclList { Program $1 $2 }
 MainClass : 
-          "class" ident "{" "public" "static" "void" "main" "(" "string" "[" "]" ident ")" "{" Statement "}" "}" { MClass $2 $12 $15 }
+           "class" ident "{" "public" "static" "void" "main" "(" ident_array ident ")" "{" Statement "}" "}" { if $9 /= "string[]" then error($9 ++ " used in class " ++ $2 ++ " main declaration instead of string[]") else MClass $2 $10 $13 }
 
 
 ClassDeclList :
@@ -79,10 +80,11 @@ FormalList :
      | Type ident FormalList { FormalList $1 $2 $3 }
 
 Type :
-     | "boolean"      { TypeBoolean }
+     "boolean"      { TypeBoolean }
      | "int"          { TypeInt }
      | "string"       { TypeString }
      | ident          { TypeIdent $1 }
+     | ident_array    { TypeIdentArray $1 }
 
 Statement :
     "{" StatementList "}"                            { SList $2 }
@@ -108,7 +110,10 @@ Exp :
     | "false"                         { ExpBool False}
     | ident                           { ExpIdent $1}
     | "this"                          { ExpThis }
-    | "new" "int" "[" Exp "]"         { ExpNewInt $4 }  
+    | "new" "int" "[" Exp "]"         { ExpNewIntArray $4 }  
+    | "new" "boolean" "[" Exp "]"     { ExpNewStringArray $4 }  
+    | "new" "string" "[" Exp "]"      { ExpNewBoolArray $4 }  
+    | "new" ident "[" Exp "]"         { ExpNewIdentArray $2 $4 }  
     | "new" ident "(" ")"             { ExpNewIdent $2}
     | "!" Exp                         { ExpNot $2}
     | "(" Exp ")"                     { ExpExp $2}
@@ -170,6 +175,7 @@ data Type =
     | TypeInt
     | TypeString
     | TypeIdent Ident
+    | TypeIdentArray Ident 
     deriving (Show, Eq)
 
 data Statement
@@ -197,10 +203,13 @@ data Exp
     | ExpFCall Exp Ident ExpList -- Exp . Ident ( ExpList )
     | ExpInt Int
     | ExpString String
-    | ExpNewInt Exp
+    | ExpNewIntArray Exp -- new int [exp]
+    | ExpNewBoolArray Exp -- new string [exp]
+    | ExpNewStringArray Exp -- new bool [exp]
     | ExpBool Bool -- True or False
     | ExpIdent Ident
     | ExpNewIdent Ident -- new Ident ()
+    | ExpNewIdentArray Ident Exp -- new Ident [Exp]
     | ExpExp Exp -- Exp ( Exp )
     | ExpThis
     | ExpNot Exp
@@ -246,12 +255,12 @@ data MethodSymbol = MethodSymbol {
     deriving (Show, Eq)
 
 
-classSymbols (Program mainClass classDeclList) = classSymbolMainClass mainClass : classSymbolscl classDeclList
+classSymbols (Program mainClass classDeclList) = classSymbolMainClass mainClass : classSymbolsClassDeclList classDeclList
 
 classSymbolMainClass (MClass className paramName statement) =
                       (className, (ClassSymbol className [] [
                                                             ("main", 
-                                                                    (MethodSymbol {returnType = "void", name = "main", args = [("String[]", paramName)]})
+                                                                    (MethodSymbol {returnType = "void", name = "main", args = [("string[]", paramName)]})
                                                             )]
                                   )
                       )
@@ -266,6 +275,7 @@ varSymbol (TypeString) ident = (ident, "string")
 varSymbol (TypeBoolean) ident = (ident, "boolean")
 varSymbol (TypeInt) ident = (ident, "int")
 varSymbol (TypeIdent identType) ident = (ident, identType)
+varSymbol (TypeIdentArray identType) ident = (ident, identType)
 
 methodSymbols MEmpty = []
 methodSymbols (MethodDeclList methodDecl methodDeclList) = methodSymbol methodDecl : methodSymbols methodDeclList
@@ -276,6 +286,7 @@ methodSymbol (MethodDecl theType ident formalList varDeclList statementList exp)
                     TypeBoolean -> (ident, MethodSymbol {returnType = "boolean", name = ident, args = (argSymbols formalList)})
                     TypeString -> (ident, MethodSymbol {returnType = "string", name = ident, args = (argSymbols formalList)})
                     TypeIdent classType -> (ident, MethodSymbol {returnType = classType, name = ident, args = (argSymbols formalList)})
+                    TypeIdentArray classType -> (ident, MethodSymbol {returnType = classType, name = ident, args = (argSymbols formalList)})
 
 argSymbols FEmpty = []
 argSymbols (FormalList theType ident formalList) =
@@ -284,6 +295,7 @@ argSymbols (FormalList theType ident formalList) =
                 TypeBoolean -> (ident, "boolean") : argSymbols formalList
                 TypeString -> (ident, "string") : argSymbols formalList
                 TypeIdent classType -> (ident, classType) : argSymbols formalList
+                TypeIdentArray classType -> (ident, classType) : argSymbols formalList
 
 
 

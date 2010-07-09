@@ -45,6 +45,7 @@ tokens :-
   "("					{ \p s -> TLeftParen p }
   ")"					{ \p s -> TRightParen p }
   $alpha[$alpha $digit \_ \']*		{ \p s -> TIdent p s }
+  $alpha[$alpha $digit \_ \']*\[\]	{ \p s -> TIdentArray p s }
   @string 	       	  		{ \p s -> TStringLiteral p (init (tail s)) -- remove the leading and trailing double quotes }
   "{"	 	 	   		{ \p s -> TLeftBrace p }
   "}"					{ \p s -> TRightBrace p }
@@ -88,6 +89,7 @@ data Token =
 	TLeftParen AlexPosn 	       |
 	TRightParen AlexPosn 	       |
 	TIdent AlexPosn String	       |
+        TIdentArray AlexPosn String    |
         TPrint AlexPosn                |
 	TIntLiteral AlexPosn Int       |
 	TStringLiteral AlexPosn String |
@@ -128,6 +130,7 @@ tokenPosn (TSemiColon p) = p
 tokenPosn (TLeftParen p) = p 	       
 tokenPosn (TRightParen p) = p 	       
 tokenPosn (TIdent p id) = p      
+tokenPosn (TIdentArray p id) = p      
 tokenPosn (TPrint p) = p              
 tokenPosn (TIntLiteral p i) = p
 tokenPosn (TStringLiteral p str) = p
