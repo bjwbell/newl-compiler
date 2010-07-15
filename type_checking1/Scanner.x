@@ -26,7 +26,7 @@ tokens :-
   "public"				{ \p s -> TPublic p }
   "extends"				{ \p s -> TExtend p }
   "int"					{ \p s -> TInt p }
-  "boolean"				{ \p s -> TBool p }
+  "bool"				{ \p s -> TBool p }
   "if"					{ \p s -> TIf p }
   "else"				{ \p s -> TElse p }
   "true"				{ \p s -> TTrue p }
