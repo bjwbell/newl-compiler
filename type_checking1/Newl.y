@@ -533,7 +533,8 @@ typeCheckExp (ExpFCall exp ident expList) classes context =
            Just x -> (checkFunctionCall x ident expListTypes)
            Nothing -> error ("Undeclared class " ++ className ++ " in function call")
 
-typeCheckExp (ExpInt int) classes context = "int"
+typeCheckExp (ExpInt _) classes context = "int"
+typeCheckExp (ExpString _) classes context = "string"
 
 typeCheckExp (ExpNewIntArray exp) classes context = 
     if typeCheckExp exp classes context == "int"
