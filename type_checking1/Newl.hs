@@ -1,11 +1,10 @@
-{-# OPTIONS_GHC -fno-warn-overlapping-patterns #-}
 module Main where
 import Scanner
 
--- parser produced by Happy Version 1.18.4
+-- parser produced by Happy Version 1.17
 
 data HappyAbsSyn t4 t5 t6 t7 t8 t9 t10 t11 t12 t13 t14 t15 t16 t17
-	= HappyTerminal (Token)
+	= HappyTerminal Token
 	| HappyErrorToken Int
 	| HappyAbsSyn4 t4
 	| HappyAbsSyn5 t5
@@ -1227,7 +1226,7 @@ happyReturn = (return)
 happyThen1 m k tks = (>>=) m (\a -> k a tks)
 happyReturn1 :: () => a -> b -> HappyIdentity a
 happyReturn1 = \a tks -> (return) a
-happyError' :: () => [(Token)] -> HappyIdentity a
+happyError' :: () => [Token] -> HappyIdentity a
 happyError' = HappyIdentity . parseError
 
 newl tks = happyRunIdentity happySomeParser where
@@ -1643,7 +1642,8 @@ typeCheckExp (ExpFCall exp ident expList) classes context =
            Just x -> (checkFunctionCall x ident expListTypes)
            Nothing -> error ("Undeclared class " ++ className ++ " in function call")
 
-typeCheckExp (ExpInt int) classes context = "int"
+typeCheckExp (ExpInt _) classes context = "int"
+typeCheckExp (ExpString _) classes context = "string"
 
 typeCheckExp (ExpNewIntArray exp) classes context = 
     if typeCheckExp exp classes context == "int"
@@ -1714,14 +1714,14 @@ main = do
   
   putStrLn ("parseTree: " ++ show(parseTree))
   print "done"
-{-# LINE 1 "templates\GenericTemplate.hs" #-}
-{-# LINE 1 "templates\\GenericTemplate.hs" #-}
+{-# LINE 1 "templates/GenericTemplate.hs" #-}
+{-# LINE 1 "templates/GenericTemplate.hs" #-}
 {-# LINE 1 "<built-in>" #-}
-{-# LINE 1 "<command line>" #-}
-{-# LINE 1 "templates\\GenericTemplate.hs" #-}
+{-# LINE 1 "<command-line>" #-}
+{-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- Id: GenericTemplate.hs,v 1.26 2005/01/14 14:47:22 simonmar Exp 
 
-{-# LINE 28 "templates\\GenericTemplate.hs" #-}
+{-# LINE 28 "templates/GenericTemplate.hs" #-}
 
 
 
@@ -1730,11 +1730,11 @@ main = do
 
 
 
-{-# LINE 49 "templates\\GenericTemplate.hs" #-}
+{-# LINE 49 "templates/GenericTemplate.hs" #-}
 
-{-# LINE 59 "templates\\GenericTemplate.hs" #-}
+{-# LINE 59 "templates/GenericTemplate.hs" #-}
 
-{-# LINE 68 "templates\\GenericTemplate.hs" #-}
+{-# LINE 68 "templates/GenericTemplate.hs" #-}
 
 infixr 9 `HappyStk`
 data HappyStk a = HappyStk a (HappyStk a)
@@ -1758,7 +1758,7 @@ happyAccept j tk st sts (HappyStk ans _) =
 -----------------------------------------------------------------------------
 -- Arrays only: do the next action
 
-{-# LINE 155 "templates\\GenericTemplate.hs" #-}
+{-# LINE 155 "templates/GenericTemplate.hs" #-}
 
 -----------------------------------------------------------------------------
 -- HappyState data type (not arrays)
@@ -1849,7 +1849,7 @@ happyDropStk n (x `HappyStk` xs) = happyDropStk (n - ((1)::Int)) xs
 -----------------------------------------------------------------------------
 -- Moving to a new state after a reduction
 
-{-# LINE 253 "templates\\GenericTemplate.hs" #-}
+{-# LINE 253 "templates/GenericTemplate.hs" #-}
 happyGoto action j tk st = action j j tk (HappyState action)
 
 
@@ -1906,7 +1906,7 @@ happyDontSeq a b = b
 -- of deciding to inline happyGoto everywhere, which increases the size of
 -- the generated parser quite a bit.
 
-{-# LINE 317 "templates\\GenericTemplate.hs" #-}
+{-# LINE 317 "templates/GenericTemplate.hs" #-}
 {-# NOINLINE happyShift #-}
 {-# NOINLINE happySpecReduce_0 #-}
 {-# NOINLINE happySpecReduce_1 #-}

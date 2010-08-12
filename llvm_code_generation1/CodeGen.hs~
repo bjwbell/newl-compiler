@@ -1,0 +1,265 @@
+module CodeGen where
+import TypeNames
+import Data.Word
+import Data.Int(Int32)
+import Data.Typeable as T
+import Foreign.C.String as CS
+import System.IO.Unsafe
+import LLVM.FFI.Core as FFI
+import LLVM.Core.Util as U
+codeGen (Program mainClass classDeclList) classes = codeGenClassDeclList classDeclList classes 
+-- if codeGenMainClass mainClass classes == "Ok" 
+-- then codeGenClassDeclList classDeclList classes
+-- else "Fail1" ++ " " ++ (codeGenMainClass mainClass classes)
+
+---codeGenClassDeclList CEmpty classes = "Ok"
+--codeGenClassDeclList (ClassDeclList classDecl classDeclList) classes = 
+--  if codeGenClassDecl classDecl classes  == "Ok"
+--  then "Ok"
+--  else codeGenClassDeclList classDeclList classes 
+
+--codeGenClassDecl (ClassDecl className varDeclList methodDeclList) classes =
+--    if codeGenVarDeclList varDeclList classes [("this", className)] == "Ok" 
+--    then codeGenMethodDeclList methodDeclList classes [("this", className)]
+--    else "Fail2"
+
+--codeGenVarDeclList VEmpty _ _ = "Ok" -- empty variable declaration list so automatically successful
+
+--codeGenVarDeclList (VarDeclList theType ident varDeclList) classes context =
+--    if checkForDuplicateVarDeclarations (VarDeclList theType ident varDeclList) [] context == "Ok" && codeGenVarDecl theType ident classes context == "Ok" 
+--    then codeGenVarDeclList varDeclList classes context
+--    else "Fail3"
+
+
+
+
+--codeGenVarDecl theType ident classes context = 
+--  case theType of
+--    TypeBool -> "Ok"
+--    TypeInt -> "Ok"
+--    TypeString -> "Ok"
+--    (TypeIdent typeName) -> case lookup typeName classes of
+--      Just classSym -> "Ok"
+--      Nothing -> error ("Unknown type " ++ typeName ++ " in the var declaration list of class " ++ (show (lookup "this" context)))
+--    (TypeIdentArray typeNameArray) -> let tName = reverse (drop 2 (reverse typeNameArray)) in -- drops the [] at the end of the typeNameArray.
+--      case lookup tName classes of
+--        Just classSym -> "Ok"
+--        Nothing -> error ("Unknown type " ++ typeNameArray ++ " in the var declaration list of class " ++ (show (lookup "this" context)))
+
+--codeGenMethodDeclList MEmpty classes context = "Ok" -- no methods so automatically successful
+--codeGenMethodDeclList (MethodDeclList methodDecl methodDeclList) classes context =
+--    if checkForDuplicateMethodDeclarations (MethodDeclList methodDecl methodDeclList) [] context == "Ok" && codeGenMethodDecl methodDecl classes context == "Ok" 
+--    then codeGenMethodDeclList methodDeclList classes context
+--    else "Fail4"
+
+
+--codeGenMethodDecl (MethodDecl theType methodName formalList varDeclList statementList exp) classes context ioModule = do
+--    let methodType = U.functionType False voidType [voidType] -- create a function that returns void and takes void
+--    method <- U.addFunction m FFI.ExternalLinkage methodName methodType
+--    bld <- U.createBuilder
+--    entry <- U.appendBasicBlock method "entry"
+--    U.positionAtEnd bld entry
+--    withBuilder bld $ \bldRef -> 
+--        FFI.buildRetVoid bldRef
+--    FFI.dumpValue fib
+
+    --let context2 = (getThisClassVariables classes context) ++ (getVarDeclListVariables varDeclList classes) ++ (getFormalListVariables formalList classes) ++ context
+    --    typeName = getTypeName theType
+    --in 
+      --if codeGenStatementList statementList classes context2 == "Ok" 
+      --then 
+      --  if typeName /=  (codeGenExp exp classes context2)
+      --  then error ("the type of method " ++ methodName ++ " does not match the return type of " ++ (show exp))
+      --  else "Ok"
+      --else 
+      --  "Fail5"          
+                
+
+--getThisClassVariables classes context =
+--    case lookup "this" context of
+--      Nothing -> error("undeclared this in context: " ++ show context)
+--      Just thisTypeName -> cVarTypes thisTypeName classes
+--
+--cVarTypes typeName classes = 
+--    case lookup typeName classes of
+--      Nothing -> error("undeclared type: " ++ typeName)
+--      Just classSym -> publicVariables classSym
+--
+--getVarDeclListVariables VEmpty _ = [] -- empty variable declaration list
+--
+--getVarDeclListVariables (VarDeclList theType ident varDeclList) classes = 
+--    let typeName = getTypeName theType 
+--    in 
+--      if lookup typeName classes == Nothing || checkForDuplicateVariableDecls varDeclList [(theType, ident)] /= "Ok"
+--      then error("unknown type " ++ typeName ++ " for variable " ++ ident)
+--      else (ident, getTypeName theType) : getVarDeclListVariables varDeclList classes
+--
+--
+--getFormalListVariables FEmpty classes = []
+--getFormalListVariables (FormalList theType ident formalList) classes = 
+--    let typeName = getTypeName theType
+--    in
+--      if lookup typeName classes == Nothing || checkForDuplicateFormalListVariables formalList [(theType, ident)] /= "Ok"
+--      then error("unknown type " ++ typeName ++ " for variable " ++ ident)
+--      else (ident, getTypeName theType) : getFormalListVariables formalList classes
+--    
+----
+codeGenMainClass (MClass className paramName statement) classes = 
+    if (lookup className classes == Nothing)
+    then error("Error " ++ className ++ " is not a declared class")
+    else
+        "Ok"
+--        do
+          -- create a module for the class with the class name.
+--          mod <- U.createModule className
+          -- create the method type. 
+--          methodType <- U.functionType Falsee voidType [voidType] 
+          --let methodType = U.functionType False voidType [voidType] -- create a function that returns void and takes void
+--          method <- U.addFunction m FFI.ExternalLinkage methodName methodType
+--          bld <- U.createBuilder
+--          entry <- U.appendBasicBlock method "entry"
+--          U.positionAtEnd bld entry
+--          withBuilder bld $ \bldRef -> 
+--          FFI.buildRetVoid bldRef
+--          FFI.dumpValue fib
+
+--          codeGenStatement statement classes [("this", className), (paramName, "string[]")]
+--
+--
+--
+--codeGenStatementList Empty classes context = "Ok"
+--codeGenStatementList (StatementList statementList statement) classes context =
+--    if codeGenStatement statement classes context == "Ok" && codeGenStatementList statementList classes context == "Ok"
+--    then "Ok"
+--    else "Fail6"
+--
+--codeGenStatement (SList statementList) classes context = 
+--    codeGenStatementList statementList classes context
+--codeGenStatement (SIfElse exp1 statement1 statement2) classes context =
+--    if (codeGenExp exp1 classes context) == "bool" && codeGenStatement statement1 classes context == "Ok" && codeGenStatement statement2 classes context == "Ok"
+--    then "Ok"
+--    else error ("Error in if else statement")
+--
+--codeGenStatement (SWhile exp statement) classes context = 
+--      if codeGenExp exp classes context == "bool" 
+--      then codeGenStatement statement classes context
+--      else error("Error type of " ++ show(exp) ++ " is not bool in while statement")
+--
+--
+--codeGenStatement (SEqual ident exp1) classes context = 
+--    let identType = lookup ident context in
+--    case identType of 
+--         Nothing -> error("Error undeclared identifier " ++ ident ++ " in equal statement")
+--         Just iType -> if iType == codeGenExp exp1 classes context
+--                     then "Ok"
+--                     else error("Error types do not match in equals statements, type1 " ++ iType ++ " type2 " ++ (codeGenExp exp1 classes context))
+
+
+--codeGenStatement (SPrint exp) classes context = if codeGenExp exp classes context /= "" then "Ok" else "Fail"
+--codeGenStatement (SArrayEqual ident exp1 exp2) classes context = 
+--  case lookup ident context of
+--    Nothing -> error("Error undeclared identifier " ++ ident ++ " in equal statement")
+--    Just iType -> if take 2 (reverse iType) /= "[]" then
+--                    error(ident ++ " is not an array")
+--                  else 
+--                    let baseTypeName = reverse (take 2 (reverse iType)) in
+--                    if baseTypeName /= codeGenExp exp2 classes context || codeGenExp exp1 classes context /= "bool" then
+--                      error("Error, can't assign to array")
+--                    else
+--                      "Ok"
+--
+---- some helper functions for codeGenExp
+
+--expTypes ExpListEmpty classes context = []
+--expTypes (ExpList exp expRest) classes context = (codeGenExp exp classes context) : expRestTypes expRest classes context
+--expTypes (ExpListExp exp) classes context = [codeGenExp exp classes context]
+--    
+--expRestTypes (ExpRest exp) classes context = [codeGenExp exp classes context]
+--        
+--
+--
+---- the codeGenExp function returns the type name of the expression
+--codeGenExp (ExpOp exp1 char exp2) classes context = 
+--    if codeGenExp exp1 classes context == "int" && codeGenExp exp2 classes context == "int"
+--       then "int"
+--       else error ("one of the expressions exp1:" ++ show(exp1) ++ " exp2:" ++ show(exp2) ++ " is not an integer \n exp1 type: " ++ (codeGenExp exp1 classes context) ++ "\n exp2 type: " ++ (codeGenExp exp2 classes context))
+
+
+--codeGenExp (ExpComOp exp1 char exp2) classes context = 
+--    if codeGenExp exp1 classes context == "int" && codeGenExp exp2 classes context == "int"
+--       then "bool"
+--       else error ("one of the expressions exp1:" ++ show(exp1) ++ " exp2:" ++ show(exp2) ++ " is not an integer \n exp1 type: " ++ (codeGenExp exp1 classes context) ++ "\n exp2 type: " ++ (codeGenExp exp2 classes context))
+
+
+--codeGenExp (ExpArray exp1 exp2) classes context  =  -- "Exp [ Exp ]"
+--  if codeGenExp exp2 classes context /= "int" then
+--    error("Error in ExpArray")
+--  else
+--    if take 2 (reverse (codeGenExp exp1 classes context)) /= "[]" then
+--      error("Error in ExpArray")
+--    else
+--      reverse(drop 2 (reverse (codeGenExp exp1 classes context)))
+--    
+--  
+--codeGenExp (ExpFCall exp ident expList) classes context =   
+--      let className = codeGenExp exp classes context -- Exp . Ident ( ExpList )
+--          classSym = lookup className classes
+--          expListTypes = expTypes expList classes context 
+--      in case classSym of
+--           Just x -> (checkFunctionCall x ident expListTypes)
+--           Nothing -> error ("Undeclared class " ++ className ++ " in function call")
+--
+--codeGenExp (ExpInt int) classes context = "int"
+--
+--codeGenExp (ExpNewIntArray exp) classes context = 
+--    if codeGenExp exp classes context == "int"
+--       then "int[]"
+--       else error ("Error new int[exp] the expression type is not an integer")
+--
+--
+--codeGenExp (ExpNewBoolArray exp) classes context = 
+--    if codeGenExp exp classes context == "int"
+--       then "bool[]"
+--       else error ("Error new bool[exp] the expression type is not an integer")
+--
+--
+--codeGenExp (ExpNewStringArray exp) classes context = 
+--    if codeGenExp exp classes context == "int"
+--       then "string[]"
+--       else error ("Error new string[exp] the expression type is not an integer")
+--
+--codeGenExp (ExpBool bool) classes context  = "bool" -- True or False
+--
+--
+--codeGenExp (ExpIdent ident) classes context = 
+--    case lookup ident context of
+--      Just x -> x
+--      Nothing -> error ("Error " ++ ident ++ " is not a declared variable, context " ++ show context)
+--                                                       
+--codeGenExp (ExpNewIdent ident) classes context = 
+--    if lookup ident classes == Nothing
+--    then error ("Error " ++ ident ++ " is not a declared class" ++ ", context " ++ show context)
+--    else ident
+--
+--codeGenExp (ExpNewIdentArray ident exp) classes context = 
+--    if lookup ident classes == Nothing || codeGenExp exp classes context /= "int"
+--    then error ("Error " ++ ident ++ " is not a declared class or " ++ show(exp) ++ " is not an int" ++ ", context " ++ show context)
+--    else ident ++ "[]"
+--
+--codeGenExp (ExpExp exp) classes context  = codeGenExp exp classes context -- Exp ( Exp )
+--
+--codeGenExp (ExpThis) classes context =
+--    let thisSym = lookup "this" context in
+--    case thisSym of 
+--      Just sym -> sym
+--      Nothing -> error ("this symbol undeclared")
+--
+--codeGenExp (ExpNot exp) classes context = 
+--    if codeGenExp exp classes context == "bool"
+--       then "bool"
+--       else error "wrong type for !exp, expecting bool type"
+--
+--codeGenExp (ExpLength exp) classes context =
+--    if codeGenExp exp classes context == "int[]"
+--           then "int"
+--           else error "Error in " ++ show(exp) ++ ".length the expression is not of type int[] "

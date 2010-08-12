@@ -1,5 +1,15 @@
-The parser directory contains the scanner and parser for NewL. I used Alex as the scanner generator and Happy as the parser generator. Both the scanner and parser are written in Haskell. 
+The directory layout is as follows:
+scanner					Scanner for NewL.
+scanner_with_error_reporting		Scanner with error reporting.
+parser					Parser and scanner.
+parser_with_error_reporting		Parser with error reporting along with the scanner.
+adding_symbol_table_part2		Parser with a symbol table.
+type_checking1				Type checker, parser, and scanner.
 
-The scanner directory contains a standalone scanner for NewL.
+llvm_code_generation1			Initial code generator using LLVM.
+README					This file.
+test_files				Various test files.
 
-The test_files directory contains test files for the scanner, parser and type checker for NewL.
+Each directoy contains a README with information on that directory.
+
+

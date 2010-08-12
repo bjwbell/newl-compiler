@@ -1,8 +1,9 @@
 {
 module Main where
-import Scanner 
+import Scanner
 import TypeNames
 import TypeChecking
+import CodeGen
 }
 
 
@@ -79,6 +80,7 @@ VarDeclList :
 FormalList :
      Type ident       { FormalList $1 $2 FEmpty }
      | Type ident FormalList { FormalList $1 $2 $3 }
+     |                { FEmpty }
 
 Type :
      "bool"      { TypeBool }
@@ -98,6 +100,7 @@ Statement :
 StatementList :
     Statement               { StatementList Empty $1 }
     | StatementList Statement   { StatementList $1 $2 }
+    |                         { Empty }
 
 Exp : 
     Exp op Exp                        { ExpOp $1 $2 $3}
@@ -131,7 +134,8 @@ ExpRest :
 parseError :: [Token] -> a
 parseError tokenList = let pos = tokenPosn(head(tokenList)) 
   in 
-  error ("parse error at line " ++ show(getLineNum(pos)) ++ " and column " ++ show(getColumnNum(pos)))
+  error ("parse error at line " ++ show(getLineNum(pos)) ++ " and column " ++ show(getColumnNum(pos)) ++ ", token " ++ show(head(tokenList)))
+
 
 main = do 
   inStr <- getContents
@@ -146,6 +150,8 @@ main = do
      then putStrLn "Semantic Analysis Results: Passed"
      else putStrLn ("Semantic Analysis Results: Failed, " ++ typeCheckingResult)
   
-  putStrLn ("parseTree: " ++ show(parseTree))
+--putStrLn ("parseTree: " ++ show(parseTree))
+  codeGenResult <- codeGen parseTree
+--  print "codeGenResult" ++ codeGenResult
   print "done"
 }

@@ -1,0 +1,14 @@
+class Main {
+      public static void main(string[] args){
+      	     System.out.println("");
+      }
+}
+
+class Foo
+{
+	public int foo()
+	{
+		return 1 + 2;
+	}
+}
+	
