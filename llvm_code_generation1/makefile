@@ -6,7 +6,8 @@ default:
 	ghc --make -optl -w -o newl Scanner.hs Util.hs TypeNames.hs TypeChecking.hs CodeGen.hs Newl.hs
 
 clean:
-	rm -f *.hs
+	rm Newl.hs
+	rm Scanner.hs
 	rm -f *.hi
 	rm -f *.o
 	rm -f newl
