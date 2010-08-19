@@ -62,7 +62,7 @@ codeGenMethodDecl (MethodDecl theType methodName formalList varDeclList statemen
       do
         expVal <- codeGenExp exp bld context
         FFI.buildRet bldRef expVal 
-  FFI.dumpValue entry
+  FFI.dumpValue method
   return "Ok"
 
 codeGenExp :: Exp -> U.Builder -> [(String, String)] -> IO FFI.ValueRef
