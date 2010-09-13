@@ -1,3 +1,6 @@
+*.hi
+*.o
+*~
 Newl.hi	
 Newl.hs	
 Newl.o	
