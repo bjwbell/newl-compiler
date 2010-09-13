@@ -1,6 +1,6 @@
-a.out 
-makefile~  
-Scanner.hi  
-Scanner.o
-Scanner.x~
+*a.out 
+*makefile~  
+*Scanner.hi  
+*Scanner.o
+*Scanner.x~
 .gitignore~
