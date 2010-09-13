@@ -3,3 +3,4 @@ makefile~
 Scanner.hi  
 Scanner.o
 Scanner.x~
+.gitignore~

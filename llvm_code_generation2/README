@@ -1,0 +1,14 @@
+The directory layout is
+Scanner.x     	     Alex scanner.
+Newl.y		     Happy parser.
+TypeNames.hs	     Types used in the parser, type checker, and code generator.
+TypeChecker.hs	     Type checker.
+CodeGen.hs	     Code generator using LLVM.
+Util.hs		     Stolen from the LLVM Haskell bindings.
+
+Run "make" to compile the files the output is "newl" which a basic code generator for the NewL language. The code it generators is the LLVM IR language. The LLVM IR language reference is located at http://llvm.org/docs/LangRef.html. 
+
+To test the code generator run
+cat ./test_files/test1.newl | ./newl in the directory with newl. It will output the LLVM IR code.
+
+To remove all compiled files run "make clean".
