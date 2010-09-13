@@ -1,5 +1,2 @@
 scanner   
-*.hi
-*.o
-*~
 Scanner.hs

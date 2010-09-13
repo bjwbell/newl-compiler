@@ -1,7 +1,3 @@
-*.hi
-*.o
-*~
 Newl.hs	
 Scanner.hs
 newl
-newl.exe
