@@ -1,0 +1,6 @@
+*.hi
+*.o
+*~
+newl	  
+Newl.hs	  
+Scanner.hs 
